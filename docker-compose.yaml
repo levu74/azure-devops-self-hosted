@@ -1,0 +1,26 @@
+services:
+  volume-init:
+    image: ubuntu:22.04
+    volumes:
+      - azp-agent-work:/azp/_work
+    command: chown -R 1000:1000 /azp/_work
+    user: root
+
+  azp-agent:
+    build:
+      context: ./agents/azp-agent-in-docker
+      dockerfile: ubuntu_22_04.dockerfile
+    restart: unless-stopped
+    depends_on:
+      - volume-init
+    environment:
+      - AZP_URL=${AZP_URL}
+      - AZP_TOKEN=${AZP_TOKEN}
+      - AZP_AGENT_NAME=${AZP_AGENT_NAME:-agent-docker}
+      - AZP_POOL=${AZP_POOL:-Default}
+      - AZP_WORK=${AZP_WORK:-_work}
+    volumes:
+      - azp-agent-work:/azp/_work
+
+volumes:
+  azp-agent-work:
