@@ -12,7 +12,8 @@ services:
       dockerfile: ubuntu_22_04.dockerfile
     restart: unless-stopped
     depends_on:
-      - volume-init
+      volume-init:
+        condition: service_completed_successfully
     environment:
       - AZP_URL=${AZP_URL}
       - AZP_TOKEN=${AZP_TOKEN}
